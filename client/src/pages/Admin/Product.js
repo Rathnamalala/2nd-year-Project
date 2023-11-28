@@ -113,14 +113,7 @@ const Products = () => {
                     <Button variant="contained" color="primary" >
                       Add to Cart
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      className={classes.readMoreButton}
-                    >
-                      Read More
-                    </Button>
+                    
                   </div>
                 </CardContent>
               </Card>

@@ -27,6 +27,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [quantities, setQuantities] = useState({});
+  const [isCodOn, setIsCodOn] = useState(false);
 
   // Update quantity state when cart changes
   useEffect(() => {
@@ -64,7 +65,7 @@ const CartPage = () => {
       });
       return total.toLocaleString("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "LKR",
       });
     } catch (error) {
       console.log(error);
@@ -101,21 +102,39 @@ const CartPage = () => {
   // Handle payments
   const handlePayment = async () => {
     try {
-      setLoading(true);
-      const { nonce } = await instance.requestPaymentMethod();
-      const quantitiesArray = Object.entries(quantities).map(([productId, quantity]) => ({ productId, quantity }));
+      if (!isCodOn) {
+        setLoading(true);
+        const { nonce } = await instance.requestPaymentMethod();
+        const quantitiesArray = Object.entries(quantities).map(([productId, quantity]) => ({ productId, quantity }));
 
-      const { data } = await axios.post("/api/v1/product/braintree/payment", {
-        nonce,
-        cart,
-        quantities: quantitiesArray, // Include quantities in the request
-      });
+        const { data } = await axios.post("/api/v1/product/braintree/payment", {
+          nonce,
+          cart,
+          quantities: quantitiesArray, // Include quantities in the request
+        });
 
-      setLoading(false);
-      localStorage.removeItem("cart");
-      setCart([]);
-      navigate("/dashboard/user/orders");
-      toast.success("Payment Completed Successfully");
+        setLoading(false);
+        localStorage.removeItem("cart");
+        setCart([]);
+        navigate("/dashboard/user/orders");
+        toast.success("Payment Completed Successfully");
+      }
+      else {
+        const quantitiesArray = Object.entries(quantities).map(([productId, quantity]) => ({ productId, quantity }));
+
+        const { data } = await axios.post("/api/v1/product/braintree/payment", {
+          isCodOn,
+          cart,
+          quantities: quantitiesArray, // Include quantities in the request
+        });
+        setLoading(false);
+        localStorage.removeItem("cart");
+        setCart([]);
+        navigate("/dashboard/user/orders");
+        toast.success("Order Placed Successfully");
+      }
+
+
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -157,9 +176,8 @@ const CartPage = () => {
             </Typography>
             <Typography variant="h6" align="center">
               {cart?.length
-                ? `You have ${cart.length} items in your cart ${
-                    auth?.token ? "" : "Please log in to checkout"
-                  }`
+                ? `You have ${cart.length} items in your cart ${auth?.token ? "" : "Please log in to checkout"
+                }`
                 : "Your Cart Is Empty"}
             </Typography>
           </Grid>
@@ -177,7 +195,7 @@ const CartPage = () => {
                   <Typography variant="h6">{p.name}</Typography>
                   <Typography>{p.description.substring(0, 30)}</Typography>
                   <Typography>Price : {p.price}</Typography>
-                  <InputLabel>Quantity:</InputLabel>
+                  <InputLabel>Quantity (KG):</InputLabel>
                   <TextField
                     type="number"
                     value={quantities[p._id]}
@@ -185,7 +203,7 @@ const CartPage = () => {
                       handleQuantityChange(p._id, parseInt(e.target.value, 10))
                     }
                     InputProps={{ inputProps: { min: 1 } }}
-                  />
+                  /> 
                   <Button
                     variant="contained"
                     color="primary"
@@ -212,27 +230,29 @@ const CartPage = () => {
             {auth?.user?.address ? (
               <>
                 <div className="mb-3">
-                  <Typography variant="h4">Current Address</Typography>
-                  <Typography variant="h5">{auth?.user?.address}</Typography>
                   <Button
                     variant="outlined"
                     color="warning"
-                    onClick={() => navigate("/dashboard/user/profile")}
+                    onClick={() => setIsCodOn(!isCodOn)}
                   >
-                    Update Address
+                    {isCodOn ? "Cancel" : "Pay Cash on Delivery"}
                   </Button>
+
                 </div>
               </>
             ) : (
               <div className="mb-3">
                 {auth?.token ? (
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={() => navigate("/dashboard/user/profile")}
-                  >
-                    Update Address
-                  </Button>
+                  <div className="mb-3">
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => setIsCodOn(!isCodOn)}
+                    >
+                      {isCodOn ? "Cancel" : "Pay Cash on Delivery"}
+                    </Button>
+
+                  </div>
                 ) : (
                   <Button
                     variant="outlined"
@@ -249,9 +269,10 @@ const CartPage = () => {
               </div>
             )}
             <div className="mt-2">
-              {!clientToken || !cart?.length ? (
+              {!clientToken || !cart?.length || isCodOn ? (
                 ""
               ) : (
+
                 <>
                   <DropIn
                     options={{
@@ -262,16 +283,16 @@ const CartPage = () => {
                     }}
                     onInstance={(instance) => setInstance(instance)}
                   />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handlePayment}
-                    disabled={loading || !instance || !auth?.user?.address}
-                  >
-                    {loading ? "Processing ...." : "Make Payment"}
-                  </Button>
                 </>
               )}
+            </div>
+            <div> <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePayment}
+            >
+              {loading ? "Processing ...." : isCodOn ? "Place Order" : "Make Payment"}
+            </Button>
             </div>
           </Grid>
         </Grid>

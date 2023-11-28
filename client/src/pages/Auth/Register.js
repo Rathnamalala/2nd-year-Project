@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 import LocationAutocomplete from './LocationAutocomplete';
 
-
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,17 +21,23 @@ const Register = () => {
   const handleLocationChange = (newLatLng) => {
     setLatLng(newLatLng);
   };
-  
-  
-
-
-
-
 
   // form function
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Check if the password meets the minimum length requirement
+      if (password.length < 8) {
+        toast.error("Password must be at least 8 characters long.");
+        return;
+      }
+
+      // Check if the phone number is 10 characters and contains only numbers
+      if (!/^\d{10}$/.test(phone)) {
+        toast.error("Phone number must be 10 digits and contain only numbers.");
+        return;
+      }
+
       const res = await axios.post("/api/v1/auth/register", {
         name,
         email,
@@ -40,9 +45,9 @@ const Register = () => {
         phone,
         address,
         location,
-        role, // Include the selected role
-        
+        role,
       });
+
       if (res && res.data.success) {
         toast.success(res.data && res.data.message);
         navigate("/login");
@@ -102,6 +107,9 @@ const Register = () => {
               placeholder="Enter Your Password"
               required
             />
+            {password.length > 0 && password.length < 8 && (
+              <p className="text-danger">Password must be at least 8 characters long.</p>
+            )}
           </div>
           <div className="mb-3">
             <input
@@ -112,6 +120,9 @@ const Register = () => {
               placeholder="Enter Your Phone"
               required
             />
+            {phone.length > 0 && !/^\d{10}$/.test(phone) && (
+              <p className="text-danger">Phone number must be 10 digits and contain only numbers.</p>
+            )}
           </div>
           <div className="mb-3">
             <input
@@ -123,19 +134,6 @@ const Register = () => {
               required
             />
           </div>
-          
-          <div className="mb-3">
-          <LocationAutocomplete
-              handleChange={handleLocationChange}
-              address={location}
-              setAddress={setLocation}
-              className="form-control"
-              placeholder="Location"
-              type="text"
-              required
-            />
-          </div >
-            
           
           <button type="submit" className="btn btn-primary">
             REGISTER

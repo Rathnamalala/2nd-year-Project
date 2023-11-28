@@ -14,6 +14,7 @@ import {
   updateAdminLocation ,
   getCurrentLocation,
   getDirectionsToAdminLocation,
+  getUserDetailsById,
   
 } from "../contrallers/authContraller.js";
 import { requireAuth } from "../middlewares/authMiddleware.js";
@@ -86,6 +87,8 @@ router.get("/user/current-location", getCurrentLocation);
 router.get("/user/directions-to-admin", getDirectionsToAdminLocation);
 
 router.get("/get-directions", requireAuth, getDirectionsToAdminLocation);
+
+router.get("/get-user-details-by-id/:userId", getUserDetailsById);
 
 
 export default router;

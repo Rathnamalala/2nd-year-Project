@@ -117,10 +117,10 @@ export const getSingleProductController = async (req, res) => {
     const product = await productModel
       .findOne({ slug: req.params.slug })
       .select("-photo")
-      
+
       .populate("category")
       .populate("user");
-      
+
     res.status(200).send({
       success: true,
       message: "Single Product Fetched",
@@ -319,7 +319,7 @@ export const realtedProductController = async (req, res) => {
         _id: { $ne: pid },
       })
       .select("-photo")
-      .limit(3)
+      .limit(7)
       .populate("category");
     res.status(200).send({
       success: true,
@@ -374,7 +374,21 @@ export const braintreeTokenController = async (req, res) => {
 //payment
 export const brainTreePaymentController = async (req, res) => {
   try {
-    const { quantities,nonce, cart } = req.body;
+    const { quantities, nonce, cart, isCodOn } = req.body;
+    if (isCodOn) {
+      const order = new orderModel({
+        products: cart,
+        quantities: quantities,
+        buyer: req.user._id,
+        payment: {
+          id: "COD",
+          status: "Cash On Delivery",
+          success: true,
+        },
+
+      }).save();
+      res.json({ ok: true });
+    }
     let total = 0;
     cart.map((i) => {
       total += i.price;
@@ -415,7 +429,7 @@ export const addRatingController = async (req, res) => {
 
     // Find the product by its ID
     const product = await productModel.findById(productId).populate("user", "name");
-    
+
 
     if (!product) {
       return res.status(404).send({ error: "Product not found" });
@@ -451,33 +465,33 @@ export const addRatingController = async (req, res) => {
 // Add a review to a product
 export const addReviewController = async (req, res) => {
   try {
-    const { productId, reviewText } = req.body;
-    const user = req.user; // Assuming you have user authentication implemented
+    const { productId, reviewText, userId } = req.body;
 
     // Find the product by its ID
-    const product = await productModel.findById(productId).populate("user", "name");
+    const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).send({ error: "Product not found" });
     }
+    else {
+      if (userId == undefined) {
+        return res.status(404).send({ error: "User not found" });
+      }
+      else {
+        const result = await Product.updateOne(
+          { _id: productId },
+          { $push: { reviews: { user: userId, text: reviewText } } }
+        );
+      }
+      res.status(200).send({
+        success: true,
+        message: "Review added successfully",
+      });
 
-    // Check if the user has already reviewed this product
-    const existingReview = product.reviews.find((review) =>
-      review.user.equals(user._id)
-    );
-
-    if (existingReview) {
-      return res.status(400).send({ error: "You have already reviewed this product" });
     }
 
-    // Add the new review
-    product.reviews.push({ user: user._id, text: reviewText });
-    await product.save();
 
-    res.status(201).send({
-      success: true,
-      message: "Review added successfully",
-    });
+
   } catch (error) {
     console.log(error);
     res.status(500).send({

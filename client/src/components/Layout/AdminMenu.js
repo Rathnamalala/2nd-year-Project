@@ -58,9 +58,7 @@ const AdminMenu = () => {
         <MenuItem to="/dashboard/admin/orders" activeClassName="active">
           Orders
         </MenuItem>
-        <MenuItem to="/dashboard/admin/users" activeClassName="active">
-          Orders
-        </MenuItem>
+        
       </ListGroup>
     </MenuContainer>
   );

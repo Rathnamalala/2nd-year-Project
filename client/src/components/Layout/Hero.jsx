@@ -62,6 +62,16 @@ const HeroSection = () => {
 
   const classes = useStyles();
 
+  const scrollToMiddleOfPage = () => {
+    // Calculate the middle of the page
+    const middleOfPage = document.documentElement.scrollHeight / 2;
+    // Scroll to the middle of the page
+    window.scrollTo({
+      top: middleOfPage,
+      behavior: "smooth", // Optional: Add smooth scrolling
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -80,8 +90,10 @@ const HeroSection = () => {
         position: "relative",
       }}
     >
-      <div style={{ position: "absolute", left: "100px",bottom: "90px"  }}>
-        <Button className={classes.button}>Shop now</Button>
+      <div style={{ position: "absolute", left: "100px", bottom: "90px" }}>
+        <Button className={classes.button} onClick={scrollToMiddleOfPage}>
+          Shop now
+        </Button>
       </div>
     </Box>
   );

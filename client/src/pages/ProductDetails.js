@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/cart";
+import CommentIcon from "@mui/icons-material/Comment";
 import {
   Card,
   CardContent,
@@ -22,85 +23,94 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 const useStyles = {
-  container: {
-    padding: "16px",
-    margin: "16px",
-    backgroundColor: "#f5f5f5",
-  },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-    size: "90%",
-    padding: "6px",
-  },
-  cardContent: {
-    flex: "1 0 auto",
-  },
-  media: {
-    height: 0,
-    paddingTop: "56.25%", // 16:9 aspect ratio
-  },
-  title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-  },
-  description: {
-    fontStyle: "italic",
-  },
-  price: {
-    fontSize: "20px",
-    fontWeight: "bold",
-  },
-  category: {
-    margin: "16px 0",
-  },
-  seller: {
-    margin: "16px 0",
-  },
-  addToCartButton: {
-    backgroundColor: "#007bff",
-    color: "white",
-    padding: "8px 16px",
-    borderRadius: "4px",
-    border: "none",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#0056b3",
+  
+    container: {
+      padding: "16px",
+      margin: "16px",
+      backgroundColor: "#f5f5f5",
     },
-  },
-  starRating: {
-    color: "#FFD700",
-  },
-  userRatingSection: {
-    margin: "16px 0",
-  },
-  userRatingInput: {
-    margin: "8px 0",
-    width: "100%",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-  },
-  submitButton: {
-    backgroundColor: "#007bff",
-    color: "white",
-    padding: "8px 16px",
-    borderRadius: "4px",
-    border: "none",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#0056b3",
+    card: {
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      size: "90%",
+      padding: "6px",
     },
-  },
-  quantityHighlight: {
-    fontWeight: "bold",
-  },
-  priceHighlight: {
-    fontWeight: "bold",
-    color: "red",
+    cardContent: {
+      flex: "1 0 auto",
+    },
+    media: {
+      height: 0,
+      paddingTop: "56.25%", // 16:9 aspect ratio
+    },
+    title: {
+      fontSize: "24px",
+      fontWeight: "bold",
+    },
+    description: {
+      fontStyle: "italic",
+    },
+    price: {
+      fontSize: "20px",
+      fontWeight: "bold",
+    },
+    category: {
+      margin: "16px 0",
+    },
+    seller: {
+      margin: "16px 0",
+    },
+    addToCartButton: {
+      backgroundColor: "#007bff",
+      color: "white",
+      padding: "8px 16px",
+      borderRadius: "4px",
+      border: "none",
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: "#0056b3",
+      },
+    },
+    starRating: {
+      color: "#FFD700",
+    },
+    userRatingSection: {
+      margin: "16px 0",
+    },
+    userRatingInput: {
+      margin: "8px 0",
+      width: "100%",
+      padding: "8px",
+      borderRadius: "4px",
+      border: "1px solid #ccc",
+    },
+    submitButton: {
+      backgroundColor: "#007bff",
+      color: "white",
+      padding: "8px 16px",
+      borderRadius: "4px",
+      border: "none",
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: "#0056b3",
+      },
+    },
+    quantityHighlight: {
+      fontWeight: "bold",
+    },
+    priceHighlight: {
+      fontWeight: "bold",
+      color: "red",
+    },
+    
+    buttonGroup: {
+      marginTop: "16px",
+    },
+  
+  buttonGroup: {
+    marginTop: "16px",
   },
 };
 
@@ -115,6 +125,8 @@ const ProductDetails = () => {
   const [productRatings, setProductRatings] = useState([]);
   const [productReviews, setProductReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
+  const [userName, setUserName] = useState("");
+  const [newReviewsWithName, setNewReviewsWithName] = useState([]);
 
   useEffect(() => {
     if (params?.slug) getProduct();
@@ -207,13 +219,50 @@ const ProductDetails = () => {
     }
   };
 
+  const getProductReviewWithName = async () => {
+    try {
+      const updatedProductReviews = [];
+
+      for (let i = 0; i < productReviews.length; i++) {
+        const review = productReviews[i];
+        const userName = await findUserById(review.user);
+        updatedProductReviews.push({ ...review, user: userName });
+      }
+      setNewReviewsWithName(updatedProductReviews);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
+  const findUserById = async (userId) => {
+    try {
+      const { data } = await axios.get(`/api/v1/auth/get-user-details-by-id/${userId}`);
+      return data?.user.name;
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      return '';
+    }
+  };
+  
+  useEffect(() => {
+    getProductReviewWithName();
+  },[productReviews.length]);
+
+  const renderProfileIdentifier = (userName) => {
+    return userName ? (
+      <span style={{ display: 'inline-block', borderRadius: '50%', background: '#007bff', color: 'white', width: '30px', height: '30px', textAlign: 'center', lineHeight: '30px', marginRight: '8px' }}>
+        {userName.charAt(0).toUpperCase()}
+      </span>
+    ) : '';
+  };
+
   return (
     <Layout>
       <Grid container style={useStyles.container}>
         <Grid item md={5}>
-          <Card style={{...useStyles.card, margin: '8px'}}>
+          <Card style={{ ...useStyles.card, margin: '8px' }}>
             <CardMedia
-              style={{...useStyles.media}}
+              style={{ ...useStyles.media }}
               image={product && product._id ? `/api/v1/product/product-photo/${product._id}` : ''}
               title={product.name}
             />
@@ -225,10 +274,10 @@ const ProductDetails = () => {
               <Typography variant="h2" component="div" style={useStyles.title}>
                 {product.name}
               </Typography>
-              <Typography variant="body1" style={useStyles.description}>
+              <Typography variant="body5" style={useStyles.description}>
                 {product.description}
               </Typography>
-              <Typography variant="h5" style={useStyles.price}>
+              <Typography variant="h3" style={useStyles.price}>
                 Price: Rs.{product.price}
               </Typography>
               <Typography variant="body2" style={useStyles.category}>
@@ -262,7 +311,7 @@ const ProductDetails = () => {
               value={userRating}
               onChange={(event, newValue) => setUserRating(newValue)}
             />
-            <br/>
+            <br />
             <Button
               variant="contained"
               style={useStyles.submitButton}
@@ -293,22 +342,38 @@ const ProductDetails = () => {
         </Grid>
       </Grid>
 
-      
       <Grid container style={useStyles.container}>
-      <div style={useStyles.userRatingSection}>
-        <Typography variant="h5">Product Reviews:</Typography>
-        <List>
-          {productReviews.map((review, index) => (
-            <div key={index}>
-              <ListItem alignItems="flex-start">
-                <ListItemText primary={review.user} secondary={review.text} />
-              </ListItem>
-              {index < productReviews.length - 1 && <Divider />}
-            </div>
-          ))}
-        </List>
-      </div>
-    </Grid>
+        <div style={useStyles.userRatingSection}>
+          <Typography variant="h5">Product Reviews:</Typography>
+          <List>
+            {newReviewsWithName.map((review, index) => (
+              <div key={index}>
+                <ListItem alignItems="flex-start">
+                  <ListItemText
+                    primary={
+                      <Typography variant="h6" style={{ fontWeight: "bold" }}>
+                        
+                        <span style={{ marginRight: "8px" }}>{renderProfileIdentifier(review.user)}</span>
+                        {review.user}
+                      </Typography>
+                    }
+                    
+                    secondary={
+                      <div>
+                        <Typography variant="body1" style={{ fontSize: "16px", marginBottom: "8px" }}>
+                          <CommentIcon style={{ marginRight: "8px" }} />
+                          {review.text}
+                        </Typography>
+                      </div>
+                    }
+                  />
+                </ListItem>
+                {index < productReviews.length - 1 && <Divider />}
+              </div>
+            ))}
+          </List>
+        </div>
+      </Grid>
 
       <Grid container style={useStyles.container}>
         <Grid item md={12}>
@@ -318,7 +383,7 @@ const ProductDetails = () => {
         <Grid item md={12}>
           <div className="d-flex flex-wrap">
             {relatedProducts?.map((p) => (
-              <Card style={useStyles.card} key={p._id}>
+              <Card style={{ ...useStyles.card, margin: '8px' }} key={p._id}>
                 <CardMedia
                   style={useStyles.media}
                   image={`/api/v1/product/product-photo/${p._id}`}
@@ -332,7 +397,7 @@ const ProductDetails = () => {
                     In Stock - <span style={useStyles.quantityHighlight}>{p.quantity}kg</span>
                   </Typography>
                   <Typography variant="h5" color="red">
-                    1Kg - <span style={useStyles.priceHighlight}>$ {p.price}</span>
+                    1Kg - <span style={useStyles.priceHighlight}>Rs {p.price}</span>
                   </Typography>
                   <div>{renderStarRatings(p.rating)}</div>
                   <div style={useStyles.buttonGroup}>
@@ -342,14 +407,6 @@ const ProductDetails = () => {
                       onClick={() => addToCart(p)}
                     >
                       Add to Cart
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      onClick={() => navigate(`/product/${p.slug}`)}
-                    >
-                      Read More
                     </Button>
                   </div>
                 </CardContent>

@@ -24,7 +24,9 @@ import {
   makeStyles,
   Grid,
   Avatar,
+  Button,
 } from "@material-ui/core";
+import RoomIcon from "@mui/icons-material/Room";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -54,10 +56,32 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: theme.palette.primary.main,
   },
+  button: {
+    margin: theme.spacing(1),
+  },
 }));
 
 const OrderTable = ({ order }) => {
   const classes = useStyles();
+  const locations = [
+    { latitude: 5.933378743390014, longitude: 80.59188792247188 },
+    { latitude: 6.277835984119728, longitude: 80.04078508134045 },
+    // Add more locations as needed
+  ];
+
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const openRandomGoogleMaps = () => {
+    const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+    setSelectedLocation(randomLocation);
+    openGoogleMapsUrl(randomLocation);
+  };
+
+  const openGoogleMapsUrl = (location) => {
+    const { latitude, longitude } = location;
+    const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    window.open(mapsUrl, '_blank');
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -70,6 +94,9 @@ const OrderTable = ({ order }) => {
             <TableCell>Date</TableCell>
             <TableCell>Payment</TableCell>
             <TableCell>Quantity</TableCell>
+            <TableCell>Product Photo</TableCell>
+          
+            <TableCell>Pick Up Point</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -88,7 +115,13 @@ const OrderTable = ({ order }) => {
             </TableCell>
             <TableCell>{moment(order?.createAt).fromNow()}</TableCell>
             <TableCell>
-              {order?.payment.success ? "Success" : "Failed"}
+              {order?.payment.success === true && order.payment.id === "COD" ? (
+                <p>COD</p>
+              ) : order?.payment.success === true ? (
+                <p>Success</p>
+              ) : (
+                <p>Failed</p>
+              )}
             </TableCell>
             <TableCell>
               <List>
@@ -98,6 +131,28 @@ const OrderTable = ({ order }) => {
                   </ListItem>
                 ))}
               </List>
+            </TableCell>
+            <TableCell>
+              {order?.products.map((product) => (
+                <img
+                  key={product._id}
+                  src={`/api/v1/product/product-photo/${product._id}`}
+                  alt={product.name}
+                  style={{ width: "50px", height: "50px", marginRight: "5px" }}
+                />
+              ))}
+            </TableCell>
+            
+            <TableCell>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={openRandomGoogleMaps}
+                startIcon={<RoomIcon />}
+                className={classes.button}
+              >
+                Find Location
+              </Button>
             </TableCell>
           </TableRow>
         </TableBody>
@@ -119,7 +174,6 @@ const ProductList = ({ products }) => {
               component="img"
               alt={product.name}
               image={`/api/v1/product/product-photo/${product._id}`}
-              
             />
             <CardContent>
               <Typography variant="h6">{product.name}</Typography>

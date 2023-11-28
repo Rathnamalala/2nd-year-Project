@@ -17,6 +17,7 @@ import PosterSlider from "../components/Layout/PosterSlider"
 import { Container, Row, Col } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AiOutlineReload } from "react-icons/ai";
+import backgroundImage from "../img/11.jpg"; 
 
 
 const useStyles = makeStyles(() => ({
@@ -29,12 +30,12 @@ const useStyles = makeStyles(() => ({
       transform: 'scale(1.05)', // Scale up the card on hover
     },
   },
-  
+
   cardContent: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    
+
   },
   buttonGroup: {
     display: "flex",
@@ -83,10 +84,12 @@ const useStyles = makeStyles(() => ({
 
 
 
+
+
 const HomePage = () => {
   const classes = useStyles();
   const [auth, setAuth] = useAuth();
-  const[cart,setCart] = useCart();
+  const [cart, setCart] = useCart();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -113,13 +116,13 @@ const HomePage = () => {
       setLoading(true);
       const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
       setLoading(false);
-      
+
       // Calculate the average rating for each product
       const productsWithAvgRating = data.products.map((product) => ({
         ...product,
         avgRating: calculateAverageRating(product.ratings),
       }));
-  
+
       setProducts(productsWithAvgRating);
     } catch (error) {
       setLoading(false);
@@ -159,7 +162,11 @@ const HomePage = () => {
         checked,
         radio,
       });
-      setProducts(data?.products);
+      const productsWithAvgRating = data.products.map((product) => ({
+        ...product,
+        avgRating: calculateAverageRating(product.ratings),
+      }));
+      setProducts(productsWithAvgRating);
     } catch (error) {
       console.log(error);
     }
@@ -177,19 +184,19 @@ const HomePage = () => {
       }
       return (
         <div>
-         {stars}
+          {stars}
         </div>
       );
-    } 
+    }
   };
   // Calculate the average rating for a product
-const calculateAverageRating = (ratings) => {
-  if (ratings.length === 0) {
-    return 0;
-  }
-  const totalRating = ratings.reduce((sum, rating) => sum + rating.value, 0);
-  return totalRating / ratings.length;
-};
+  const calculateAverageRating = (ratings) => {
+    if (ratings.length === 0) {
+      return 0;
+    }
+    const totalRating = ratings.reduce((sum, rating) => sum + rating.value, 0);
+    return totalRating / ratings.length;
+  };
 
   //getTOtal COunt
   const getTotal = async () => {
@@ -218,22 +225,22 @@ const calculateAverageRating = (ratings) => {
   };
 
   return (
-    <Layout title={"All products -  Best offers "}>
+    <Layout title={"All products -  Best offers "} style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
       <Container fluid>
-  <Row className="mt-5">
-    <Col md={4} className="offset-md-1 text-center"> {/* Move the column to the right */}
-      <HeroSection />
-    </Col>
-  </Row>
-</Container>
+        <Row className="mt-5">
+          <Col md={4} className="offset-md-1 text-center"> {/* Move the column to the right */}
+            <HeroSection />
+          </Col>
+        </Row>
+      </Container>
 
-      
-      
+
+
 
       <div className="container-fluid row mt-3">
         <div className="col-md-2">
           <div className={classes.categoryContainer} >
-            <h4 className={classes.categoryTitle}style={{ Color: 'darkgreen' }}>Filter By Category</h4>
+            <h4 className={classes.categoryTitle} style={{ Color: 'darkgreen' }}>Filter By Category</h4>
             <div className={classes.categoryList}>
               {categories?.map((c) => (
                 <label key={c._id} className={classes.categoryLabel} >
@@ -248,19 +255,19 @@ const calculateAverageRating = (ratings) => {
           </div>
 
           {/* Price filter */}
-          <h4 className="text-center mt-4" style={{ marginBottom: '30px', fontSize: '28px', color: 'darkgreen' }} >
-              Filter By Price
+          <h4 className="text-center mt-4"  >
+            Filter By Price
           </h4>
           <div className="d-flex flex-column">
-              <Radio.Group onChange={(e) => setRadio(e.target.value)}>
-                  {Prices?.map((p) => (
-            <div key={p._id} style={{ marginBottom: '20px' }}>
+            <Radio.Group onChange={(e) => setRadio(e.target.value)}>
+              {Prices?.map((p) => (
+                <div key={p._id} style={{ marginBottom: '20px' }}>
                   <Radio value={p.array} style={{ fontSize: '16px', color: 'green' }}>
-                      {p.name}
+                    {p.name}
                   </Radio>
-            </div>
-            ))}
-              </Radio.Group>
+                </div>
+              ))}
+            </Radio.Group>
           </div>
 
           <div className="d-flex flex-column">
@@ -273,7 +280,7 @@ const calculateAverageRating = (ratings) => {
           </div>
         </div>
 
-        <div className="col-md-9">
+        <div className="col-md-9" style={{ marginBottom: '30px', fontSize: '28px', color: 'darkgreen' }}>
           <h1 className="text-center">All Products</h1>
           <div className="d-flex flex-wrap">
             {products?.map((p) => (
@@ -287,7 +294,7 @@ const calculateAverageRating = (ratings) => {
                 />
                 <CardContent className={classes.cardContent}>
                   <Typography variant="h6" component="div">
-                  <span style={{ fontWeight: 'bold' }}>{p.name}</span>
+                    <span style={{ fontWeight: 'bold' }}>{p.name}</span>
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     In Stock -<span className={classes.quantityHighlight}>{p.quantity}kg</span>
@@ -300,15 +307,15 @@ const calculateAverageRating = (ratings) => {
                   <div>{renderStarRatings(p.avgRating)}</div>
                   <div className={classes.buttonGroup}>
 
-                    <Button variant="contained" color="primary" 
-                    onClick={() => {
-                      setCart([...cart, p]);
-                      localStorage.setItem(
-                        "cart",
-                        JSON.stringify([...cart, p])
-                      );
-                      toast.success("Item Added to cart");
-                    }}>
+                    <Button variant="contained" color="primary"
+                      onClick={() => {
+                        setCart([...cart, p]);
+                        localStorage.setItem(
+                          "cart",
+                          JSON.stringify([...cart, p])
+                        );
+                        toast.success("Item Added to cart");
+                      }}>
                       Add to Cart
                     </Button>
                   </div>
@@ -338,7 +345,7 @@ const calculateAverageRating = (ratings) => {
           </div>
         </div>
       </div>
-      
+
       <FeaturesSection />
     </Layout>
   );

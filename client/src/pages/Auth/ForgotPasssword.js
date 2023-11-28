@@ -8,7 +8,7 @@ import "../../styles/AuthStyles.css";
 const ForgotPasssword = () => {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [answer, setAnswer] = useState("");
+  const [name, setName] = useState("");
 
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const ForgotPasssword = () => {
       const res = await axios.post("/api/v1/auth/forgot-password", {
         email,
         newPassword,
-        answer,
+        name,
       });
       if (res && res.data.success) {
         toast.success(res.data && res.data.message);
@@ -53,11 +53,11 @@ const ForgotPasssword = () => {
           <div className="mb-3">
             <input
               type="text"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="form-control"
               id="exampleInputEmail1"
-              placeholder="Enter Your favorite Sport Name "
+              placeholder="Enter Your Name "
               required
             />
           </div>

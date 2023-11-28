@@ -85,7 +85,7 @@ const AdminDashboard = () => {
             <div className="col-md-9">
               <Card>
                 <CardTitle>Seller Information</CardTitle>
-                <ProfilePhoto />
+                
                 <CardText>
                   <strong>Name:</strong> {auth?.user?.name}
                 </CardText>
@@ -95,21 +95,7 @@ const AdminDashboard = () => {
                 <CardText>
                   <strong>Contact:</strong> {auth?.user?.phone}
                 </CardText>
-                <div>
-                  <strong>Location:</strong>{" "}
-                  {location
-                    ? `${location.address} (Lat: ${location.lat}, Lng: ${location.lng})`
-                    : "Location not set"}
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Enter address"
-                    value={addressInput}
-                    onChange={(e) => setAddressInput(e.target.value)}
-                  />
-                  <button onClick={setAddress}>Set Location</button>
-                </div>
+                
               </Card>
             </div>
           </div>

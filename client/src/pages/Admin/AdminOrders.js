@@ -110,6 +110,7 @@ const AdminOrders = () => {
                     <TableCell>Date</TableCell>
                     <TableCell>Payment</TableCell>
                     <TableCell>Quantity</TableCell>
+                    <TableCell>Product Photo</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -152,35 +153,18 @@ const AdminOrders = () => {
                           ))}
                         </ul>
                       </TableCell>
+                      <TableCell>
+                        <CardMedia
+                          className={classes.productMedia}
+                          component="img"
+                          alt={o?.products[0].name}
+                          image={`/api/v1/product/product-photo/${o?.products[0]._id}`}
+                        />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-
-              {/* Product Details */}
-              <div>
-                {orders.map((o) => (
-                  o?.products?.map((p, j) => (
-                    <Card key={p._id} className={classes.productCard}>
-                      <CardMedia
-                        className={classes.productMedia}
-                        component="img"
-                        alt={p.name}
-                        image={`/api/v1/product/product-photo/${p._id}`}
-                      />
-                      <CardContent className={classes.productDetails}>
-                        
-                        <div className={classes.productInfo}>
-                        <Typography variant="subtitle1">Name{p.name}</Typography>
-                          <Typography variant="subtitle1">Description: {p.description}</Typography>
-                          <Typography variant="subtitle1">Price: ${p.price}</Typography>
-                          {/* Add more product details here */}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ))}
-              </div>
             </Box>
           </Paper>
         </Grid>
