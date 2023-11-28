@@ -110,7 +110,7 @@ const AdminOrders = () => {
                     <TableCell>Date</TableCell>
                     <TableCell>Payment</TableCell>
                     <TableCell>Quantity</TableCell>
-                    <TableCell>Product Photo</TableCell>
+                    <TableCell>Product</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

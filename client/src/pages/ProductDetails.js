@@ -128,6 +128,10 @@ const ProductDetails = () => {
   const [userName, setUserName] = useState("");
   const [newReviewsWithName, setNewReviewsWithName] = useState([]);
 
+
+  const auth = localStorage.getItem("auth");
+
+
   useEffect(() => {
     if (params?.slug) getProduct();
   }, [params?.slug]);
@@ -192,10 +196,16 @@ const ProductDetails = () => {
   };
 
   const submitReview = async () => {
+    const data = localStorage.getItem("auth");
+     
+      const parseData = JSON.parse(data);
+    const userId= parseData.user._id;
+    
     try {
       const response = await axios.post(`/api/v1/product/add-review`, {
         productId: product._id,
         reviewText: userReview,
+        userId: userId,
       });
 
       if (response.data.success) {
@@ -205,7 +215,7 @@ const ProductDetails = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Failed to add review");
+      toast.error(error)
     }
   };
 

@@ -50,28 +50,21 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <AppBar position="static" sx={{ backgroundColor: "darkgreen" }}>
         <Toolbar>
           
           
           {/* Rest of your AppBar content */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "darkgreen", fontWeight: "bold", fontSize: "24px" }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "white", fontWeight: "bold", fontSize: "24px" }}>
             ECHO AGRI MARKET MANAGEMENT SYSTEM
           </Typography>
           <div>
-            <IconButton color="black">
-              <Badge badgeContent={4} color="black">
-                <Notifications />
-              </Badge>
-            </IconButton>
-            <IconButton color="black">
-              <AccountCircle />
-            </IconButton>
+            
 
           
           </div>
             {/* Display the current date and time */}
-            <Typography variant="subtitle1" sx={{ color: "darkgreen", marginRight: "auto" }}>
+            <Typography variant="subtitle1" sx={{ color: "white", marginRight: "auto" }}>
             {formattedDateTime}
           </Typography>
         </Toolbar>

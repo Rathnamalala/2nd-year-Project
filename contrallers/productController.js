@@ -3,10 +3,6 @@ import categoryModel from "../models/categoryModel.js";
 import orderModel from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 
-
-
-
-
 import fs from "fs";
 import slugify from "slugify";
 import braintree from "braintree";
@@ -29,28 +25,29 @@ export const createProductController = async (req, res) => {
     const user = req.user; // Retrieve the authenticated user from the request
 
     if (!user) {
-      return res.status(401).json({ error: 'User not authenticated' });
+      return res.status(401).json({ error: "User not authenticated" });
     }
 
-    const { name, description, price, category, quantity, shipping } = req.fields;
+    const { name, description, price, category, quantity, shipping } =
+      req.fields;
     const { photo } = req.files;
 
     // Validation (same as your previous code)
     switch (true) {
       case !name:
-        return res.status(500).send({ error: 'Name is Required' });
+        return res.status(500).send({ error: "Name is Required" });
       case !description:
-        return res.status(500).send({ error: 'Description is Required' });
+        return res.status(500).send({ error: "Description is Required" });
       case !price:
-        return res.status(500).send({ error: 'Price is Required' });
+        return res.status(500).send({ error: "Price is Required" });
       case !category:
-        return res.status(500).send({ error: 'Category is Required' });
+        return res.status(500).send({ error: "Category is Required" });
       case !quantity:
-        return res.status(500).send({ error: 'Quantity is Required' });
+        return res.status(500).send({ error: "Quantity is Required" });
       case photo && photo.size > 1000000:
         return res
           .status(500)
-          .send({ error: 'Photo is Required and should be less than 1mb' });
+          .send({ error: "Photo is Required and should be less than 1mb" });
     }
 
     // Create a new product and associate it with the currently logged-in user
@@ -62,7 +59,7 @@ export const createProductController = async (req, res) => {
       quantity,
       shipping,
       user: user._id,
-      slug: slugify(name)
+      slug: slugify(name),
     });
 
     if (photo) {
@@ -73,7 +70,7 @@ export const createProductController = async (req, res) => {
     await product.save();
     res.status(201).send({
       success: true,
-      message: 'Product Created Successfully',
+      message: "Product Created Successfully",
       product,
     });
   } catch (error) {
@@ -81,7 +78,7 @@ export const createProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: 'Error in creating the product',
+      message: "Error in creating the product",
     });
   }
 };
@@ -92,7 +89,7 @@ export const getProductController = async (req, res) => {
     const products = await productModel
       .find({})
       .populate("category")
-      .populate('user', 'name') // Add this line to populate the "user" field and get the seller's name
+      .populate("user", "name") // Add this line to populate the "user" field and get the seller's name
       .select("-photo")
       .limit(12)
       .sort({ createdAt: -1 });
@@ -385,41 +382,40 @@ export const brainTreePaymentController = async (req, res) => {
           status: "Cash On Delivery",
           success: true,
         },
-
       }).save();
       res.json({ ok: true });
-    }
-    let total = 0;
-    cart.map((i) => {
-      total += i.price;
-    });
-    let newTransaction = gateway.transaction.sale(
-      {
-        amount: total,
-        paymentMethodNonce: nonce,
-        options: {
-          submitForSettlement: true,
+    } else {
+      let total = 0;
+      cart.map((i) => {
+        total += i.price;
+      });
+      let newTransaction = gateway.transaction.sale(
+        {
+          amount: total,
+          paymentMethodNonce: nonce,
+          options: {
+            submitForSettlement: true,
+          },
         },
-      },
-      function (error, result) {
-        if (result) {
-          const order = new orderModel({
-            products: cart,
-            payment: result,
-            quantities: quantities,
-            buyer: req.user._id,
-          }).save();
-          res.json({ ok: true });
-        } else {
-          res.status(500).send(error);
+        function (error, result) {
+          if (result) {
+            const order = new orderModel({
+              products: cart,
+              payment: result,
+              quantities: quantities,
+              buyer: req.user._id,
+            }).save();
+            res.json({ ok: true });
+          } else {
+            res.status(500).send(error);
+          }
         }
-      }
-    );
+      );
+    }
   } catch (error) {
     console.log(error);
   }
 };
-
 
 // Add a rating to a product
 export const addRatingController = async (req, res) => {
@@ -428,8 +424,9 @@ export const addRatingController = async (req, res) => {
     const user = req.user; // Assuming you have user authentication implemented
 
     // Find the product by its ID
-    const product = await productModel.findById(productId).populate("user", "name");
-
+    const product = await productModel
+      .findById(productId)
+      .populate("user", "name");
 
     if (!product) {
       return res.status(404).send({ error: "Product not found" });
@@ -441,7 +438,9 @@ export const addRatingController = async (req, res) => {
     );
 
     if (existingRating) {
-      return res.status(400).send({ error: "You have already rated this product" });
+      return res
+        .status(400)
+        .send({ error: "You have already rated this product" });
     }
 
     // Add the new rating
@@ -472,12 +471,10 @@ export const addReviewController = async (req, res) => {
 
     if (!product) {
       return res.status(404).send({ error: "Product not found" });
-    }
-    else {
+    } else {
       if (userId == undefined) {
         return res.status(404).send({ error: "User not found" });
-      }
-      else {
+      } else {
         const result = await Product.updateOne(
           { _id: productId },
           { $push: { reviews: { user: userId, text: reviewText } } }
@@ -487,11 +484,7 @@ export const addReviewController = async (req, res) => {
         success: true,
         message: "Review added successfully",
       });
-
     }
-
-
-
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -519,7 +512,8 @@ export const getRatingsAndReviewsController = async (req, res) => {
 
     // Calculate the average rating
     const totalRatings = ratings.reduce((acc, rating) => acc + rating.value, 0);
-    const averageRating = ratings.length > 0 ? totalRatings / ratings.length : 0;
+    const averageRating =
+      ratings.length > 0 ? totalRatings / ratings.length : 0;
 
     res.status(200).send({
       success: true,
@@ -536,4 +530,3 @@ export const getRatingsAndReviewsController = async (req, res) => {
     });
   }
 };
-

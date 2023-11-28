@@ -94,7 +94,7 @@ const OrderTable = ({ order }) => {
             <TableCell>Date</TableCell>
             <TableCell>Payment</TableCell>
             <TableCell>Quantity</TableCell>
-            <TableCell>Product Photo</TableCell>
+            <TableCell>Product</TableCell>
           
             <TableCell>Pick Up Point</TableCell>
           </TableRow>
