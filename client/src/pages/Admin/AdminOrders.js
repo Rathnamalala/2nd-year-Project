@@ -136,12 +136,14 @@ const AdminOrders = () => {
                       <TableCell>{o?.buyer?.name}</TableCell>
                       <TableCell>{moment(o?.createAt).format("DD/MM/YYYY")}</TableCell>
                       <TableCell>
-                        {o?.payment.success ? (
-                          <CheckCircleOutlineIcon style={{ color: "green" }} />
-                        ) : (
-                          <CancelIcon style={{ color: "red" }} />
-                        )}
-                      </TableCell>
+              {o?.payment.success === true && o.payment.id === "COD" ? (
+                <p>COH</p>
+              ) : o?.payment.success === true ? (
+                <p>Success</p>
+              ) : (
+                <p>Failed</p>
+              )}
+            </TableCell>
                       <TableCell>
                         <ul>
                           {o?.quantities.map((quantityItem, index) => (

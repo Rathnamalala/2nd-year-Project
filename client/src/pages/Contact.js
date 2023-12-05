@@ -7,26 +7,33 @@ const Contact = () => {
       <div className="row contactus ">
         <div className="col-md-6 ">
           <img
-            src="images/contact.jpg"
+            src="https://media.istockphoto.com/id/1217108207/photo/shopping-or-delivery-fruits-and-vegetables.jpg?s=612x612&w=0&k=20&c=Fhd4ySZl4lwVoHCPcpOO-UOldzTUYPVEHaNc2cYp3KI="
             alt="contactus"
-            style={{ width: "70%" }}
+            style={{ width: "100%", borderRadius: "10px" }}
           />
         </div>
-        <div className="col-md-4">
-          <h1 className="bg-dark p-3 text-white text-center">CONTACT US</h1>
-          <p className="text-justify mt-2">
-            any query and info about prodduct feel free to call anytime we 24X7
-            vaialible
-          </p>
-          <p className="mt-3">
-            <BiMailSend /> : www.help@ecommerceapp.com
-          </p>
-          <p className="mt-3">
-            <BiPhoneCall /> : 012-3456789
-          </p>
-          <p className="mt-3">
-            <BiSupport /> : 1800-0000-0000 (toll free)
-          </p>
+        <div className="col-md-6">
+        <div className="contact-info">
+          <h1 className="bg-dark p-3 text-white text-center">Get in touch</h1>
+          <div className="contact-text"></div>
+          <p>
+          Have questions or need assistance with our products? We're here to help.
+           </p>
+           <p> Our support team is available 24/7 to assist you.</p>
+           </div>
+           <div className="contact-details">
+              <div className="contact-item"></div>
+              <BiMailSend /> <span>Email: <a href="mailto:help@ecommerceapp.com">help@ecommerceapp.com</a></span>
+              </div>
+              <div className="contact-item">
+              <BiPhoneCall /> <span>Phone: 012-345-6789</span>
+              </div>
+              <div className="contact-item">
+              <BiSupport /> <span>Toll-Free: 1800-0000-0000</span>
+            
+         
+          
+          </div>
         </div>
       </div>
     </Layout>

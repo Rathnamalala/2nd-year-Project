@@ -32,7 +32,7 @@ export const createProductController = async (req, res) => {
       req.fields;
     const { photo } = req.files;
 
-    // Validation (same as your previous code)
+    
     switch (true) {
       case !name:
         return res.status(500).send({ error: "Name is Required" });
@@ -332,7 +332,7 @@ export const realtedProductController = async (req, res) => {
   }
 };
 
-// get prdocyst by catgory
+// get product by catgory
 export const productCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });

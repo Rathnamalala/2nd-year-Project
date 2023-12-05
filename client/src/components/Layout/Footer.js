@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';  // Import the Link component
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 
 export default function App() {
@@ -76,24 +77,24 @@ export default function App() {
             <MDBCol md='3' lg='2' xl='2' className='mx-auto mb-4'>
               <h6 className='text-uppercase fw-bold mb-4'>Useful links</h6>
               <p>
-                <a href='#!' className='text-reset'>
-                  Privacy
-                </a>
+              <Link to='/policy' className='text-reset'> 
+                  Policies
+                </Link>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
-                  Terms and Conditions
-                </a>
-              </p>
-              <p>
-                <a href='#!' className='text-reset'>
+              <Link to='/about' className='text-reset'> 
                   About Us
-                </a>
+                </Link>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
-                  Help
-                </a>
+              <Link to='/contact' className='text-reset'> 
+                  Contacts
+                </Link>
+              </p>
+              <p>
+              <Link to='/about' className='text-reset'> 
+                  About Us
+                </Link>
               </p>
             </MDBCol>
 

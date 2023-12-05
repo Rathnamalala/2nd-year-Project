@@ -94,6 +94,7 @@ const HeroSection = () => {
         <Button className={classes.button} onClick={scrollToMiddleOfPage}>
           Shop now
         </Button>
+        
       </div>
     </Box>
   );

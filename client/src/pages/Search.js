@@ -3,6 +3,9 @@ import Layout from "./../components/Layout/Layout";
 import { useSearch } from "../context/search";
 import { Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/cart";
+import toast from "react-hot-toast";
 
 const useStyles = makeStyles(() => ({
   productCard: {
@@ -27,11 +30,13 @@ const useStyles = makeStyles(() => ({
 const Search = () => {
   const [values, setValues] = useSearch();
   const classes = useStyles();
+  const [cart, setCart] = useCart();
+  const navigate = useNavigate();
   return (
     <Layout title={"Search results"}>
       <div className="container">
         <div className="text-center">
-          <h1>Search Resuts</h1>
+          <h1>Search Results</h1>
           <h6>
             {values?.results.length < 1
               ? "No Products Found"
@@ -45,6 +50,7 @@ const Search = () => {
                  alt={p.name}
                  height="200"
                  image={`/api/v1/product/product-photo/${p._id}`}
+                 onClick={() => navigate(`/product/${p.slug}`)}
                />
                <CardContent className={classes.cardContent}>
                  <Typography variant="h6" component="div">
@@ -57,9 +63,17 @@ const Search = () => {
                   1Kg- Rs.{p.price}
                  </Typography>
                  <div className={classes.buttonGroup}>
-                   <Button variant="contained" color="primary">
-                     Add to Cart
-                   </Button>
+                 <Button variant="contained" color="primary"
+                      onClick={() => {
+                        setCart([...cart, p]);
+                        localStorage.setItem(
+                          "cart",
+                          JSON.stringify([...cart, p])
+                        );
+                        toast.success("Item Added to cart");
+                      }}>
+                      Add to Cart
+                    </Button>
                    
                  </div>
                </CardContent>

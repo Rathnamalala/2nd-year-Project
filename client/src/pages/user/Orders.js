@@ -64,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
 const OrderTable = ({ order }) => {
   const classes = useStyles();
   const locations = [
-    { latitude: 5.933378743390014, longitude: 80.59188792247188 },
-    { latitude: 6.277835984119728, longitude: 80.04078508134045 },
+    { latitude: 7.486887895596171, longitude:  80.36516520384944 },
+    { latitude:  7.486887895596171, longitude:  80.36516520384944 },
     // Add more locations as needed
   ];
 
@@ -91,7 +91,7 @@ const OrderTable = ({ order }) => {
             <TableCell>#</TableCell>
             <TableCell>Status</TableCell>
             <TableCell>Seller</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell>Time</TableCell>
             <TableCell>Payment</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Product</TableCell>
@@ -116,7 +116,7 @@ const OrderTable = ({ order }) => {
             <TableCell>{moment(order?.createAt).fromNow()}</TableCell>
             <TableCell>
               {order?.payment.success === true && order.payment.id === "COD" ? (
-                <p>COD</p>
+                <p>COH</p>
               ) : order?.payment.success === true ? (
                 <p>Success</p>
               ) : (
@@ -164,25 +164,7 @@ const OrderTable = ({ order }) => {
 const ProductList = ({ products }) => {
   const classes = useStyles();
 
-  return (
-    <Grid container spacing={4}>
-      {products.map((product, i) => (
-        <Grid item xs={18} sm={10} key={product._id}>
-          <Card className={classes.card}>
-            <CardMedia
-              className={classes.cardMedia}
-              component="img"
-              alt={product.name}
-              image={`/api/v1/product/product-photo/${product._id}`}
-            />
-            <CardContent>
-              <Typography variant="h6">{product.name}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  );
+  
 };
 
 const Orders = () => {

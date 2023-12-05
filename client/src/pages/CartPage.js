@@ -235,7 +235,7 @@ const CartPage = () => {
                     color="warning"
                     onClick={() => setIsCodOn(!isCodOn)}
                   >
-                    {isCodOn ? "Cancel" : "Pay Cash on Delivery"}
+                    {isCodOn ? "Cancel" : "Pay Cash on Hand"}
                   </Button>
 
                 </div>
@@ -249,7 +249,7 @@ const CartPage = () => {
                       color="warning"
                       onClick={() => setIsCodOn(!isCodOn)}
                     >
-                      {isCodOn ? "Cancel" : "Pay Cash on Delivery"}
+                      {isCodOn ? "Cancel" : "Pay Cash on Hand"}
                     </Button>
 
                   </div>

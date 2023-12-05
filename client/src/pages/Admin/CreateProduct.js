@@ -74,7 +74,7 @@ const CreateProduct = () => {
             <div className="m-1 w-75">
               <Select
                 bordered={false}
-                placeholder="Select a category"
+                placeholder="Select a Category"
                 size="large"
                 showSearch
                 className="form-select mb-3"
@@ -116,7 +116,7 @@ const CreateProduct = () => {
                 <input
                   type="text"
                   value={name}
-                  placeholder="write a name"
+                  placeholder="Enter Name"
                   className="form-control"
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -125,7 +125,7 @@ const CreateProduct = () => {
                 <textarea
                   type="text"
                   value={description}
-                  placeholder="write a description"
+                  placeholder="Write the Description"
                   className="form-control"
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -135,7 +135,7 @@ const CreateProduct = () => {
                 <input
                   type="number"
                   value={price}
-                  placeholder="write a Price (LKR)"
+                  placeholder="Enter the Price(LKR) of 1KG"
                   className="form-control"
                   onChange={(e) => setPrice(e.target.value)}
                 />
@@ -144,7 +144,7 @@ const CreateProduct = () => {
                 <input
                   type="number"
                   value={quantity}
-                  placeholder="write a quantity (KG)"
+                  placeholder="Enter the Quantity (KG)"
                   className="form-control"
                   onChange={(e) => setQuantity(e.target.value)}
                 />
@@ -162,6 +162,7 @@ const CreateProduct = () => {
                 >
                   <Option value="0">No</Option>
                   <Option value="1">Yes</Option>
+                  
                 </Select>
               </div>
               <div className="mb-3">

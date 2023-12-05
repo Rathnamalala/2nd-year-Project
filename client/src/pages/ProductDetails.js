@@ -398,6 +398,7 @@ const ProductDetails = () => {
                   style={useStyles.media}
                   image={`/api/v1/product/product-photo/${p._id}`}
                   title={p.name}
+                  onClick={() => navigate(`/product/${p.slug}`)}
                 />
                 <CardContent style={useStyles.cardContent}>
                   <Typography variant="h2" style={useStyles.title}>
