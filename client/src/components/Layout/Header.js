@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "../../context/auth";
@@ -8,13 +7,16 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
-  InputBase,
 } from "@mui/material";
-import { AccountCircle, Notifications, Search } from "@mui/icons-material";
-import { useCart } from "../../context/cart";
 import { Badge } from "antd";
 import useCategory from "../../hooks/useCategory";
+import { useCart } from "../../context/cart";
+import { styled } from '@mui/system';
+
+// Define a styled AppBar with gradient background
+const GradientAppBar = styled(AppBar)`
+  background: linear-gradient(to left, #00cc00, #006600); /* Adjust these colors as needed */
+`;
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
@@ -50,25 +52,19 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "darkgreen" }}>
+      <GradientAppBar position="static">
         <Toolbar>
-          
-          
-          {/* Rest of your AppBar content */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "white", fontWeight: "bold", fontSize: "24px" }}>
-            ECHO AGRI MARKET MANAGEMENT SYSTEM
+            ECHO AGRI MARKET 
           </Typography>
           <div>
-            
-
-          
-          </div>
             {/* Display the current date and time */}
             <Typography variant="subtitle1" sx={{ color: "white", marginRight: "auto" }}>
-            {formattedDateTime}
-          </Typography>
+              {formattedDateTime}
+            </Typography>
+          </div>
         </Toolbar>
-      </AppBar>
+      </GradientAppBar>
 
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
@@ -96,9 +92,6 @@ const Header = () => {
                 </NavLink>
               </li>
 
-
-              
-
               {!auth?.user ? (
                 <>
                   <li className="nav-item">
@@ -111,7 +104,6 @@ const Header = () => {
                       Login
                     </NavLink>
                   </li>
-
                 </>
               ) : (
                 <>
@@ -153,7 +145,6 @@ const Header = () => {
                   </Badge>
                 </li>
               )}
-
             </ul>
           </div>
         </div>

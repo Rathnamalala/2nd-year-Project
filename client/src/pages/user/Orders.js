@@ -35,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
   },
+  headerCell: {
+    backgroundColor: '#006350', // Set your desired background color
+    color: theme.palette.common.white, // Set the text color
+    fontWeight: 'bold', // Make the text bold if needed
+  },
   card: {
     display: "flex",
     marginBottom: theme.spacing(2),
@@ -86,17 +91,16 @@ const OrderTable = ({ order }) => {
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table}>
-        <TableHead>
+      <TableHead>
           <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Seller</TableCell>
-            <TableCell>Time</TableCell>
-            <TableCell>Payment</TableCell>
-            <TableCell>Quantity</TableCell>
-            <TableCell>Product</TableCell>
-          
-            <TableCell>Pick Up Point</TableCell>
+            <TableCell className={classes.headerCell}>#</TableCell>
+            <TableCell className={classes.headerCell}>Status</TableCell>
+            <TableCell className={classes.headerCell}>Seller</TableCell>
+            <TableCell className={classes.headerCell}>Time</TableCell>
+            <TableCell className={classes.headerCell}>Payment</TableCell>
+            <TableCell className={classes.headerCell}>Quantity</TableCell>
+            <TableCell className={classes.headerCell}>Product</TableCell>
+            <TableCell className={classes.headerCell}>Pick Up Point</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
